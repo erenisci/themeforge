@@ -11,30 +11,31 @@ import { SubscriptionTier, TierLimits } from '../types/subscription.types';
 
 export const TIER_LIMITS: Record<SubscriptionTier, TierLimits> = {
   free: {
-    themes: 5,
-    aiCreditsPerMonth: 0, // Free tier gets 3 one-time credits (handled separately)
+    themes: 1, // Single theme to prevent multi-account abuse
+    aiCreditsPerMonth: 0, // Free tier gets 1 one-time credit (handled separately)
     exports: -1, // Unlimited exports
-    storageMB: 10,
+    storageMB: 0.5, // ~15 KB average theme size
   },
   starter: {
     themes: 20,
     aiCreditsPerMonth: 15,
     exports: -1, // Unlimited exports
-    storageMB: 50,
+    storageMB: 5, // ~300 KB average (20 themes × 15 KB)
   },
   pro: {
     themes: -1, // Unlimited themes
     aiCreditsPerMonth: 50,
     exports: -1, // Unlimited exports
-    storageMB: 200,
+    storageMB: 50, // ~3,300 themes capacity
   },
 };
 
 /**
  * Free tier special credits
  * These are one-time lifetime credits, not monthly
+ * Reduced to 1 to prevent abuse while allowing users to try AI features
  */
-export const FREE_TIER_LIFETIME_CREDITS = 3;
+export const FREE_TIER_LIFETIME_CREDITS = 1;
 
 /**
  * Cost per credit by tier (for reference/analytics)

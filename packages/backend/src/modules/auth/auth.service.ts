@@ -52,7 +52,7 @@ export class AuthService {
       const userResult = await client.query(
         `INSERT INTO users (email, username, password_hash, full_name, role, is_active, email_verified)
          VALUES ($1, $2, $3, $4, $5, $6, $7)
-         RETURNING id, email, username, full_name, avatar_url, email_verified, role, is_active, created_at, updated_at, last_login_at`,
+         RETURNING id, email, username, full_name, email_verified, role, is_active, created_at, updated_at, last_login_at`,
         [data.email, data.username, passwordHash, data.fullName || null, 'user', true, false]
       );
 
@@ -72,10 +72,10 @@ export class AuthService {
         [user.id]
       );
 
-      // Create initial add-on credits record (Free tier gets 3 one-time credits)
+      // Create initial add-on credits record (Free tier gets 1 one-time credit)
       await client.query(
         `INSERT INTO user_addon_credits (user_id, ai_credits_addon)
-         VALUES ($1, 3)`,
+         VALUES ($1, 1)`,
         [user.id]
       );
 
@@ -106,7 +106,7 @@ export class AuthService {
   async login(data: LoginDTO): Promise<AuthResponse> {
     // Find user by email
     const userResult = await query(
-      `SELECT id, email, username, password_hash, full_name, avatar_url, email_verified, role, is_active, created_at, updated_at, last_login_at
+      `SELECT id, email, username, password_hash, full_name, email_verified, role, is_active, created_at, updated_at, last_login_at
        FROM users
        WHERE email = $1`,
       [data.email]
@@ -206,7 +206,6 @@ export class AuthService {
       emailVerified: user.email_verified,
       isActive: user.is_active,
       fullName: user.full_name,
-      avatarUrl: user.avatar_url,
     };
   }
 
@@ -215,7 +214,7 @@ export class AuthService {
    */
   async getCurrentUser(userId: string): Promise<User> {
     const result = await query(
-      `SELECT id, email, username, full_name, avatar_url, email_verified, role, is_active, created_at, updated_at, last_login_at
+      `SELECT id, email, username, full_name, email_verified, role, is_active, created_at, updated_at, last_login_at
        FROM users
        WHERE id = $1`,
       [userId]

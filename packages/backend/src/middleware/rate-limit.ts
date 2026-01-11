@@ -1,6 +1,11 @@
 /**
  * Rate Limiting Middleware
  * Tier-based rate limits
+ *
+ * Strategy:
+ * - Anonymous users: Use frontend-only interactive demo (no backend API)
+ * - Free tier: Authenticated users with 1 theme + 1 AI credit
+ * - Starter/Pro: Paid tiers with higher limits
  */
 
 import rateLimit from 'express-rate-limit';
@@ -24,9 +29,13 @@ export const apiLimiter = rateLimit({
       if (subscription?.tier === 'starter') {
         return 200; // Starter: 200 req/15min
       }
+      // Free tier (authenticated users)
+      return 100; // Free: 100 req/15min
     }
 
-    return 50; // Free/unauthenticated: 50 req/15min
+    // Anonymous users: Very limited (only for health, register, login)
+    // Theme creation/AI features require authentication (use frontend demo instead)
+    return 10; // Anonymous: 10 req/15min (auth endpoints only)
   },
   message: {
     error: 'RATE_LIMIT_EXCEEDED',
@@ -56,6 +65,9 @@ export const authLimiter = rateLimit({
 /**
  * AI analysis rate limiter
  * Very strict to prevent abuse
+ *
+ * Note: AI credits are tracked separately in usage_tracking table
+ * This is an additional safety layer for rate limiting
  */
 export const aiLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
@@ -64,14 +76,17 @@ export const aiLimiter = rateLimit({
       const subscription = (req as any).subscription;
 
       if (subscription?.tier === 'pro') {
-        return 100; // Pro: 100 AI calls/hour
+        return 100; // Pro: 100 AI calls/hour (safety limit)
       }
       if (subscription?.tier === 'starter') {
-        return 30; // Starter: 30 AI calls/hour
+        return 30; // Starter: 30 AI calls/hour (safety limit)
       }
+      // Free tier
+      return 5; // Free: 5 AI calls/hour (safety limit)
     }
 
-    return 5; // Free: 5 AI calls/hour
+    // Anonymous users cannot use AI (requires authentication)
+    return 0; // Anonymous: No AI access (use frontend demo)
   },
   message: {
     error: 'AI_RATE_LIMIT_EXCEEDED',
