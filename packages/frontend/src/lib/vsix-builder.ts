@@ -32,13 +32,14 @@ export async function buildVSIX(theme: SharedTheme): Promise<Blob> {
     type: theme.type,
     colors: theme.colors,
     tokenColors: theme.tokenColors,
+    ...(theme.semanticTokenColors && { semanticTokenColors: theme.semanticTokenColors }),
   };
 
   zip.file('extension/package.json', JSON.stringify(packageJson, null, 2));
   zip.file('extension/themes/theme.json', JSON.stringify(themeJson, null, 2));
   zip.file(
     'extension/README.md',
-    `# ${theme.name}\n\nCreated with [ThemeForge](https://github.com/themeforge/themeforge).\n`,
+    `# ${theme.name}\n\nCreated with [ThemeForge](https://github.com/erenisci/themeforge).\n`,
   );
 
   return zip.generateAsync({ type: 'blob' });
