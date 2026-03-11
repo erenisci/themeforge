@@ -1,6 +1,7 @@
 'use client';
 
 import { EditorColorsPanel } from '@/components/panels/EditorColorsPanel';
+import { HistoryPanel } from '@/components/panels/HistoryPanel';
 import { ScorePanel } from '@/components/panels/ScorePanel';
 import { SemanticPanel } from '@/components/panels/SemanticPanel';
 import { SyntaxPanel } from '@/components/panels/SyntaxPanel';
@@ -19,6 +20,7 @@ export function PropertiesPanel() {
       {activePanel === 'ui' && <UIColorsPanel />}
       {activePanel === 'terminal' && <TerminalPanel />}
       {activePanel === 'analysis' && <ScorePanel />}
+      {activePanel === 'history' && <HistoryPanel />}
     </div>
   );
 }

@@ -396,7 +396,7 @@ export function VSCodeChrome() {
           {pickerOpen && (
             <div
               className='fixed z-[9999] bg-surface-2 border border-border rounded shadow-lg py-1 min-w-[120px]'
-              style={{ top: pickerPos.top, left: pickerPos.left }}
+              style={{ top: pickerPos.top - 2, left: pickerPos.left - 1 }}
             >
               {LANGUAGE_LIST.filter(l => !openTabs.includes(l.id)).map(l => (
                 <button
@@ -512,7 +512,14 @@ export function VSCodeChrome() {
                         : 'rotate(0deg)',
                     }}
                   >
-                    <path d='M2 3.5L5 6.5L8 3.5' stroke='currentColor' strokeWidth='1.5' fill='none' strokeLinecap='round' strokeLinejoin='round' />
+                    <path
+                      d='M2 3.5L5 6.5L8 3.5'
+                      stroke='currentColor'
+                      strokeWidth='1.5'
+                      fill='none'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
                   </svg>
                 ) : (
                   <span className='w-2.5 flex-shrink-0' />

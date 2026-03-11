@@ -197,11 +197,7 @@ export const languageTypeScript: LanguageDefinition = {
           ],
         },
         {
-          tokens: [
-            { text: '  ' },
-            { text: '"dependencies"', scope: 'string' },
-            { text: ': {' },
-          ],
+          tokens: [{ text: '  ' }, { text: '"dependencies"', scope: 'string' }, { text: ': {' }],
         },
         {
           highlight: 'selection',
@@ -232,11 +228,7 @@ export const languageTypeScript: LanguageDefinition = {
       lines: [
         { tokens: [{ text: '{' }] },
         {
-          tokens: [
-            { text: '  ' },
-            { text: '"compilerOptions"', scope: 'string' },
-            { text: ': {' },
-          ],
+          tokens: [{ text: '  ' }, { text: '"compilerOptions"', scope: 'string' }, { text: ': {' }],
         },
         {
           highlight: 'line',

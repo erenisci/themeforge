@@ -12,6 +12,7 @@ interface ColorPickerProps {
   onBlur?: () => void;
   onHover?: () => void;
   onLeave?: () => void;
+  disabled?: boolean;
 }
 
 const PRESET_COLORS = [
@@ -62,6 +63,7 @@ export function ColorPicker({
   onBlur,
   onHover,
   onLeave,
+  disabled = false,
 }: ColorPickerProps) {
   const [open, setOpen] = useState(false);
   const [hexInput, setHexInput] = useState(value);
@@ -167,8 +169,9 @@ export function ColorPicker({
       {/* Trigger row: swatch + hex + optional badge */}
       <button
         type='button'
-        onClick={() => setOpen(o => !o)}
-        className='flex items-center gap-2 w-full group'
+        onClick={() => !disabled && setOpen(o => !o)}
+        disabled={disabled}
+        className={`flex items-center gap-2 w-full group ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
       >
         <div
           className={`w-7 h-7 rounded border flex-shrink-0 transition-all ${open ? 'border-accent ring-1 ring-accent' : 'border-border group-hover:border-text-muted'}`}

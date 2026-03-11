@@ -62,6 +62,7 @@ export interface VSCodeThemeExport {
   type: 'dark' | 'light';
   colors: Record<string, string>;
   tokenColors: TokenColor[];
+  semanticTokenColors?: Record<string, string>;
 }
 
 export interface VSCodePackageJSON {
