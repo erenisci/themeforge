@@ -10,6 +10,8 @@ export function ShareModal() {
   const { shareModalOpen, closeShareModal } = useUIStore();
   const { share, shareUrl, loading, error, reset } = useShare();
   const [name, setName] = useState('');
+  const [authorName, setAuthorName] = useState('');
+  const [isPublic, setIsPublic] = useState(false);
   const [copied, setCopied] = useState(false);
 
   if (!shareModalOpen) return null;
@@ -18,10 +20,12 @@ export function ShareModal() {
     closeShareModal();
     reset();
     setName('');
+    setAuthorName('');
+    setIsPublic(false);
     setCopied(false);
   };
 
-  const handleShare = () => share(name || undefined);
+  const handleShare = () => share(name || undefined, authorName || undefined, isPublic);
 
   const handleCopy = async () => {
     if (!shareUrl) return;
@@ -72,6 +76,23 @@ export function ShareModal() {
               onChange={e => setName(e.target.value)}
             />
 
+            <Input
+              label='Your name (optional)'
+              placeholder='Anonymous'
+              value={authorName}
+              onChange={e => setAuthorName(e.target.value.slice(0, 50))}
+            />
+
+            <label className='flex items-center gap-2.5 cursor-pointer select-none'>
+              <input
+                type='checkbox'
+                checked={isPublic}
+                onChange={e => setIsPublic(e.target.checked)}
+                className='w-3.5 h-3.5 rounded accent-accent'
+              />
+              <span className='text-xs text-text-secondary'>Add to public gallery</span>
+            </label>
+
             {error && <p className='text-xs text-red-400'>{error}</p>}
 
             <Button
@@ -106,6 +127,8 @@ export function ShareModal() {
               onClick={() => {
                 reset();
                 setName('');
+                setAuthorName('');
+                setIsPublic(false);
               }}
               className='text-xs text-text-muted hover:text-text-secondary transition-colors text-left'
             >

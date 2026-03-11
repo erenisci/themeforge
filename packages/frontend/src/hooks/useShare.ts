@@ -15,11 +15,11 @@ export function useShare() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const share = async (name?: string) => {
+  const share = async (name?: string, authorName?: string, isPublic = false) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.post<ShareResponse>('/api/themes/share', { name, theme });
+      const res = await api.post<ShareResponse>('/api/themes/share', { name, theme, authorName: authorName || undefined, isPublic });
       // Construct frontend URL from the returned ID
       const frontendUrl = `${window.location.origin}/theme/${res.id}`;
       setShareUrl(frontendUrl);
@@ -35,5 +35,5 @@ export function useShare() {
     setError(null);
   };
 
-  return { share, shareUrl, loading, error, reset };
+  return { share, shareUrl, loading, error, reset } as const;
 }
