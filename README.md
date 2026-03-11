@@ -2,7 +2,7 @@
 
 > Open source code editor theme builder — design, preview, and export themes directly in your browser.
 
-**[Try](https://themeforge-code-editor-theme-builder.vercel.app)** · **[Gallery](https://themeforge-code-editor-theme-builder.vercel.app/gallery)** · **[Contributing](CONTRIBUTING.md)**
+**[Open App](https://themeforge-code-editor-theme-builder.vercel.app)** · **[Gallery](https://themeforge-code-editor-theme-builder.vercel.app/gallery)** · **[Contributing](CONTRIBUTING.md)**
 
 ---
 
@@ -93,7 +93,7 @@ PORT=3001
 CORS_ORIGIN=http://localhost:3000
 FRONTEND_URL=http://localhost:3000
 TURSO_DATABASE_URL=file:./data/themes.db   # local SQLite for dev; use Turso URL in prod
-TURSO_AUTH_TOKEN=                           # leave empty for local dev
+TURSO_AUTH_TOKEN=                          # leave empty for local dev
 ```
 
 **Frontend** (`packages/frontend/.env.local`):
