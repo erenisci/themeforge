@@ -56,3 +56,9 @@ yarn-error.log*
 
 # Claude Code
 .claude/
+CLAUDE.md
+
+# SQLite / local database files
+packages/backend/data/*.db
+packages/backend/data/*.db-shm
+packages/backend/data/*.db-wal
