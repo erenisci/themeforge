@@ -1,8 +1,16 @@
 # ThemeForge
 
-Open source code editor theme builder. Create, preview, and export beautiful themes directly in your browser — no account required, no AI, completely free.
+> Open source code editor theme builder — design, preview, and export themes directly in your browser.
 
-**[Try it →](https://themeforge.app)** · **[Gallery](https://themeforge.app/gallery)** · **[Contributing](CONTRIBUTING.md)**
+**[Try it ](https://themeforge.app)** · **[Gallery](https://themeforge.app/gallery)** · **[Contributing](CONTRIBUTING.md)**
+
+---
+
+![preview](packages/frontend/public/preview.png)
+
+---
+
+ThemeForge is a fully client-side theme editor for code editors. Pick colors with an HSV picker, see live syntax highlighting update in real time, check WCAG contrast compliance, and export a ready-to-install `.vsix` file — all without signing up or sending your data anywhere.
 
 ---
 
@@ -11,7 +19,7 @@ Open source code editor theme builder. Create, preview, and export beautiful the
 ### Editor
 
 - **Visual color editor** — HSV picker with 2D palette, hue slider, hex input, and 36 presets
-- **Live VS Code preview** — chrome mockup with syntax highlighting, file explorer, breadcrumbs, status bar, terminal
+- **Live preview** — editor chrome mockup with syntax highlighting, file explorer, breadcrumbs, status bar, terminal
 - **Multi-language tabs** — JS/TS and Python previews; drag to reorder, open/close freely
 - **File explorer** — click files to switch code view; collapse folders with animated chevron
 - **Undo / Redo** — Ctrl+Z / Ctrl+Y with a full git-style history panel (up to 50 snapshots)
@@ -142,11 +150,11 @@ themeforge/
 
 ## How Export Works
 
-Click **Export** → choose **VS Code** or **Cursor** (same `.vsix` format). The file is built client-side using JSZip — no server involved. Includes both `tokenColors` and `semanticTokenColors`.
+Click **Export** → choose your editor (VS Code, Cursor, or others as they're added). The file is built client-side using JSZip — no server involved. Includes both `tokenColors` and `semanticTokenColors`.
 
-To install:
+To install in VS Code / Cursor:
 
-- Drag the `.vsix` into VS Code's Extensions panel, **or**
+- Drag the `.vsix` into the Extensions panel, **or**
 - Run `Extensions: Install from VSIX` from the command palette
 
 ---
@@ -191,4 +199,4 @@ For bugs or feature requests, [open an issue](https://github.com/erenisci/themef
 
 ## License
 
-MIT © [erenisci](https://github.com/erenisci)
+MIT © [erenisci](https://github.com/erenisci) — see [LICENSE](LICENSE) for details.

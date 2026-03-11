@@ -43,7 +43,14 @@ export function EditorLayout() {
       <ExportModal />
       <EditorsModal />
       <footer className='flex items-center justify-between px-4 py-1.5 border-t border-border bg-surface-1 text-[10px] text-text-muted shrink-0'>
-        <span>MIT License</span>
+        <a
+          href='https://github.com/erenisci/themeforge/blob/master/LICENSE'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='hover:text-text-secondary transition-colors'
+        >
+          MIT License
+        </a>
         <div className='flex items-center gap-3'>
           <a
             href='https://github.com/erenisci/themeforge'
@@ -53,13 +60,22 @@ export function EditorLayout() {
           >
             GitHub
           </a>
-          <Link href='/gallery' className='hover:text-text-secondary transition-colors'>
+          <Link
+            href='/gallery'
+            className='hover:text-text-secondary transition-colors'
+          >
             Gallery
           </Link>
-          <Link href='/legal/terms' className='hover:text-text-secondary transition-colors'>
+          <Link
+            href='/legal/terms'
+            className='hover:text-text-secondary transition-colors'
+          >
             Terms
           </Link>
-          <Link href='/legal/privacy' className='hover:text-text-secondary transition-colors'>
+          <Link
+            href='/legal/privacy'
+            className='hover:text-text-secondary transition-colors'
+          >
             Privacy
           </Link>
           <a
