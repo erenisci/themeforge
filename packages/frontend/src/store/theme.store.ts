@@ -10,11 +10,12 @@ import type {
 import { analyzeHarmony, contrastRatio, readabilityScore, wcagLevel } from '@themeforge/shared';
 import { create } from 'zustand';
 
+const MAX_HISTORY = 50;
+
 function computeAnalysis(theme: SharedTheme): ThemeAnalysis {
   const bg = theme.colors['editor.background'] || '#000000';
   const fg = theme.colors['editor.foreground'] || '#ffffff';
 
-  // Key token pairs to check
   const pairs: { name: string; scope: string }[] = [
     { name: 'Comment', scope: 'comment' },
     { name: 'Keyword', scope: 'keyword' },
@@ -59,15 +60,12 @@ function computeAnalysis(theme: SharedTheme): ThemeAnalysis {
     }
   }
 
-  // Collect all unique foreground colors for harmony analysis
   const allColors = [
     fg,
     ...(theme.tokenColors.map(t => t.settings.foreground).filter(Boolean) as string[]),
   ];
   const harmonyResult = analyzeHarmony(allColors);
-
   const readScore = readabilityScore(theme);
-
   const passing = contrastResults.filter(r => r.wcagLevel !== 'fail');
   const hasAAA = passing.every(r => r.wcagLevel === 'AAA');
   const hasAA = passing.length === contrastResults.length;
@@ -80,10 +78,20 @@ function computeAnalysis(theme: SharedTheme): ThemeAnalysis {
   };
 }
 
+export interface HistoryEntry {
+  theme: SharedTheme;
+  label: string;
+  timestamp: number;
+}
+
 interface ThemeState {
   theme: SharedTheme;
   analysis: ThemeAnalysis;
   isDirty: boolean;
+  history: HistoryEntry[];
+  future: HistoryEntry[];
+  canUndo: boolean;
+  canRedo: boolean;
 
   setColor: (key: string, hex: string) => void;
   setTokenColor: (scope: string, hex: string) => void;
@@ -93,75 +101,120 @@ interface ThemeState {
   setThemeName: (name: string) => void;
   setThemeType: (type: 'dark' | 'light') => void;
   loadTheme: (theme: SharedTheme) => void;
+  undo: () => void;
+  redo: () => void;
+  jumpToHistory: (index: number) => void;
+  clearHistory: () => void;
+}
+
+function pushHistory(
+  history: HistoryEntry[],
+  theme: SharedTheme,
+  label: string,
+): HistoryEntry[] {
+  const entry: HistoryEntry = { theme, label, timestamp: Date.now() };
+  return [...history.slice(-MAX_HISTORY + 1), entry];
 }
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
   theme: defaultDark,
   analysis: computeAnalysis(defaultDark),
   isDirty: false,
+  history: [],
+  future: [],
+  canUndo: false,
+  canRedo: false,
 
   setColor: (key, hex) => {
-    const theme = { ...get().theme, colors: { ...get().theme.colors, [key]: hex } };
-    set({ theme, analysis: computeAnalysis(theme), isDirty: true });
+    const prev = get().theme;
+    const theme = { ...prev, colors: { ...prev.colors, [key]: hex } };
+    set(s => ({
+      theme,
+      analysis: computeAnalysis(theme),
+      isDirty: true,
+      history: pushHistory(s.history, prev, `Changed ${key}`),
+      future: [],
+      canUndo: true,
+      canRedo: false,
+    }));
   },
 
   setTokenColor: (scope, hex) => {
-    const theme = get().theme;
-    const exists = theme.tokenColors.some(t => {
+    const prev = get().theme;
+    const exists = prev.tokenColors.some(t => {
       const scopes = Array.isArray(t.scope) ? t.scope : [t.scope];
       return scopes.includes(scope);
     });
-
     const tokenColors = exists
-      ? theme.tokenColors.map(t => {
+      ? prev.tokenColors.map(t => {
           const scopes = Array.isArray(t.scope) ? t.scope : [t.scope];
-          if (scopes.includes(scope)) {
-            return { ...t, settings: { ...t.settings, foreground: hex } };
-          }
+          if (scopes.includes(scope)) return { ...t, settings: { ...t.settings, foreground: hex } };
           return t;
         })
-      : [
-          ...theme.tokenColors,
-          {
-            name: scope,
-            scope,
-            settings: { foreground: hex },
-          },
-        ];
-
-    const updated = { ...theme, tokenColors };
-    set({ theme: updated, analysis: computeAnalysis(updated), isDirty: true });
+      : [...prev.tokenColors, { name: scope, scope, settings: { foreground: hex } }];
+    const theme = { ...prev, tokenColors };
+    set(s => ({
+      theme,
+      analysis: computeAnalysis(theme),
+      isDirty: true,
+      history: pushHistory(s.history, prev, `Changed ${scope} color`),
+      future: [],
+      canUndo: true,
+      canRedo: false,
+    }));
   },
 
   setTokenFontStyle: (scope, fontStyle) => {
-    const theme = get().theme;
-    const exists = theme.tokenColors.some(t => {
+    const prev = get().theme;
+    const exists = prev.tokenColors.some(t => {
       const scopes = Array.isArray(t.scope) ? t.scope : [t.scope];
       return scopes.includes(scope);
     });
     const tokenColors = exists
-      ? theme.tokenColors.map(t => {
+      ? prev.tokenColors.map(t => {
           const scopes = Array.isArray(t.scope) ? t.scope : [t.scope];
-          if (scopes.includes(scope)) {
-            return { ...t, settings: { ...t.settings, fontStyle } };
-          }
+          if (scopes.includes(scope)) return { ...t, settings: { ...t.settings, fontStyle } };
           return t;
         })
-      : [...theme.tokenColors, { name: scope, scope, settings: { fontStyle } }];
-    const updated = { ...theme, tokenColors };
-    set({ theme: updated, analysis: computeAnalysis(updated), isDirty: true });
+      : [...prev.tokenColors, { name: scope, scope, settings: { fontStyle } }];
+    const theme = { ...prev, tokenColors };
+    set(s => ({
+      theme,
+      analysis: computeAnalysis(theme),
+      isDirty: true,
+      history: pushHistory(s.history, prev, `Changed ${scope} style`),
+      future: [],
+      canUndo: true,
+      canRedo: false,
+    }));
   },
 
   setSemanticColor: (key, hex) => {
-    const theme = get().theme;
-    const updated = { ...theme, semanticTokenColors: { ...theme.semanticTokenColors, [key]: hex } };
-    set({ theme: updated, analysis: computeAnalysis(updated), isDirty: true });
+    const prev = get().theme;
+    const theme = { ...prev, semanticTokenColors: { ...prev.semanticTokenColors, [key]: hex } };
+    set(s => ({
+      theme,
+      analysis: computeAnalysis(theme),
+      isDirty: true,
+      history: pushHistory(s.history, prev, `Changed ${key}`),
+      future: [],
+      canUndo: true,
+      canRedo: false,
+    }));
   },
 
   setEditorSetting: (key, value) => {
-    const theme = get().theme;
-    const updated = { ...theme, editorSettings: { ...theme.editorSettings, [key]: value } };
-    set({ theme: updated, analysis: computeAnalysis(updated), isDirty: true });
+    const prev = get().theme;
+    const theme = { ...prev, editorSettings: { ...prev.editorSettings, [key]: value } };
+    set(s => ({
+      theme,
+      analysis: computeAnalysis(theme),
+      isDirty: true,
+      history: pushHistory(s.history, prev, `Changed ${key}`),
+      future: [],
+      canUndo: true,
+      canRedo: false,
+    }));
   },
 
   setThemeName: name => {
@@ -169,15 +222,79 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
   },
 
   setThemeType: type => {
+    const prev = get().theme;
     const base = type === 'light' ? defaultLight : defaultDark;
-    const currentName = get().theme.name;
-    const wasDefault = currentName === 'My Dark Theme' || currentName === 'My Light Theme';
-    const name = wasDefault ? base.name : currentName;
+    const wasDefault = prev.name === 'My Dark Theme' || prev.name === 'My Light Theme';
+    const name = wasDefault ? base.name : prev.name;
     const theme = { ...base, name };
-    set({ theme, analysis: computeAnalysis(theme), isDirty: true });
+    set({
+      theme,
+      analysis: computeAnalysis(theme),
+      isDirty: false,
+      history: [],
+      future: [],
+      canUndo: false,
+      canRedo: false,
+    });
   },
 
   loadTheme: theme => {
-    set({ theme, analysis: computeAnalysis(theme), isDirty: false });
+    set({ theme, analysis: computeAnalysis(theme), isDirty: false, history: [], future: [], canUndo: false, canRedo: false });
   },
+
+  undo: () => {
+    const { history, theme, future } = get();
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    const newHistory = history.slice(0, -1);
+    const newFuture: HistoryEntry[] = [{ theme, label: 'Current', timestamp: Date.now() }, ...future];
+    set({
+      theme: prev.theme,
+      analysis: computeAnalysis(prev.theme),
+      isDirty: true,
+      history: newHistory,
+      future: newFuture.slice(0, MAX_HISTORY),
+      canUndo: newHistory.length > 0,
+      canRedo: true,
+    });
+  },
+
+  redo: () => {
+    const { future, theme, history } = get();
+    if (future.length === 0) return;
+    const next = future[0];
+    const newFuture = future.slice(1);
+    const newHistory = [...history, { theme, label: 'Current', timestamp: Date.now() }];
+    set({
+      theme: next.theme,
+      analysis: computeAnalysis(next.theme),
+      isDirty: true,
+      history: newHistory.slice(-MAX_HISTORY),
+      future: newFuture,
+      canUndo: true,
+      canRedo: newFuture.length > 0,
+    });
+  },
+
+  jumpToHistory: index => {
+    const { history, theme } = get();
+    if (index < 0 || index >= history.length) return;
+    const target = history[index];
+    const newHistory = history.slice(0, index);
+    const newFuture: HistoryEntry[] = [
+      { theme, label: 'Current', timestamp: Date.now() },
+      ...history.slice(index + 1).reverse(),
+    ];
+    set({
+      theme: target.theme,
+      analysis: computeAnalysis(target.theme),
+      isDirty: true,
+      history: newHistory,
+      future: newFuture.slice(0, MAX_HISTORY),
+      canUndo: newHistory.length > 0,
+      canRedo: newFuture.length > 0,
+    });
+  },
+
+  clearHistory: () => set({ history: [], future: [], canUndo: false, canRedo: false }),
 }));
