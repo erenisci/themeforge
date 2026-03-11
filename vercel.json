@@ -1,6 +1,5 @@
 {
-  "buildCommand": "cd ../shared && npm run build && cd ../frontend && npm run build",
-  "outputDirectory": "packages/frontend/.next",
+  "buildCommand": "cd ../shared && npm run build && npm run build",
   "installCommand": "npm install",
   "framework": "nextjs"
 }
