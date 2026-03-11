@@ -1,39 +1,26 @@
-import { Pool, QueryResult } from 'pg';
+import type BetterSqlite3 from 'better-sqlite3';
+import Database from 'better-sqlite3';
+import fs from 'fs';
+import path from 'path';
 
-// Database connection pool
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === 'production'
-      ? {
-          rejectUnauthorized: true,
-        }
-      : false,
-  max: parseInt(process.env.DATABASE_POOL_SIZE || '20'),
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
+const dataDir = path.join(__dirname, '../../data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
 
-// Parameterized query helper (prevents SQL injection)
-export const query = (text: string, params?: any[]): Promise<QueryResult> => {
-  return pool.query(text, params);
-};
+export const db: BetterSqlite3.Database = new Database(path.join(dataDir, 'themes.db'));
 
-// Test database connection
-export const testConnection = async (): Promise<boolean> => {
-  try {
-    const result = await query('SELECT NOW()');
-    console.log('✅ Database connected:', result.rows[0].now);
-    return true;
-  } catch (error) {
-    console.error('❌ Database connection failed:', error);
-    return false;
-  }
-};
+// Initialize schema on startup (idempotent)
+db.exec(`
+  CREATE TABLE IF NOT EXISTS shared_themes (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    theme_json TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+  );
 
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, closing database pool...');
-  await pool.end();
-  process.exit(0);
-});
+  CREATE INDEX IF NOT EXISTS idx_shared_themes_created
+    ON shared_themes(created_at DESC);
+`);
+
+console.log('SQLite database ready');
