@@ -2,7 +2,16 @@
 
 import { create } from 'zustand';
 
-export type ActivePanel = 'editor' | 'syntax' | 'ui' | 'terminal' | 'analysis' | 'semantic';
+export type ActiveEditor = 'vscode' | 'vim' | 'jetbrains' | 'sublime' | 'zed';
+
+export type ActivePanel =
+  | 'editor'
+  | 'syntax'
+  | 'ui'
+  | 'terminal'
+  | 'analysis'
+  | 'semantic'
+  | 'history';
 export type ActiveLanguage = 'typescript' | 'python';
 
 interface UIState {
@@ -15,7 +24,10 @@ interface UIState {
   sidebarCollapsed: boolean;
   focusedColorKey: string | null;
   hoveredColorKey: string | null;
+  activeEditor: ActiveEditor;
+  isReadOnly: boolean;
 
+  setActiveEditor: (editor: ActiveEditor) => void;
   setActivePanel: (panel: ActivePanel) => void;
   setActiveLanguage: (lang: ActiveLanguage | null) => void;
   addTab: (langId: string) => void;
@@ -30,6 +42,7 @@ interface UIState {
   toggleSidebar: () => void;
   setFocusedColorKey: (key: string | null) => void;
   setHoveredColorKey: (key: string | null) => void;
+  setReadOnly: (value: boolean) => void;
 }
 
 export const useUIStore = create<UIState>(set => ({
@@ -42,7 +55,10 @@ export const useUIStore = create<UIState>(set => ({
   sidebarCollapsed: false,
   focusedColorKey: null,
   hoveredColorKey: null,
+  activeEditor: 'vscode',
+  isReadOnly: false,
 
+  setActiveEditor: editor => set({ activeEditor: editor }),
   setActivePanel: panel => set({ activePanel: panel }),
   setActiveLanguage: lang => set({ activeLanguage: lang }),
   addTab: langId =>
@@ -71,4 +87,5 @@ export const useUIStore = create<UIState>(set => ({
   reorderTabs: tabs => set({ openTabs: tabs }),
   setFocusedColorKey: key => set({ focusedColorKey: key }),
   setHoveredColorKey: key => set({ hoveredColorKey: key }),
+  setReadOnly: value => set({ isReadOnly: value }),
 }));

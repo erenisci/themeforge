@@ -1,6 +1,6 @@
 'use client';
 
-import { useUIStore } from '@/store/ui.store';
+import { useUIStore, type ActiveEditor } from '@/store/ui.store';
 
 interface EditorOption {
   id: string;
@@ -45,7 +45,7 @@ const EDITORS: EditorOption[] = [
 ];
 
 export function EditorsModal() {
-  const { editorsModalOpen, closeEditorsModal } = useUIStore();
+  const { editorsModalOpen, closeEditorsModal, activeEditor, setActiveEditor } = useUIStore();
 
   if (!editorsModalOpen) return null;
 
@@ -87,19 +87,28 @@ export function EditorsModal() {
         </div>
 
         <div className='flex flex-col gap-2'>
-          {EDITORS.map(editor => (
+          {EDITORS.map(editor => {
+            const isSelected = activeEditor === editor.id;
+            return (
             <div
               key={editor.id}
+              onClick={() => {
+                if (!editor.available) return;
+                setActiveEditor(editor.id as ActiveEditor);
+                closeEditorsModal();
+              }}
               className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
                 editor.available
-                  ? 'border-accent bg-accent/5 cursor-pointer'
+                  ? isSelected
+                    ? 'border-accent bg-accent/10 cursor-pointer'
+                    : 'border-border hover:border-accent/50 hover:bg-accent/5 cursor-pointer'
                   : 'border-border opacity-50 cursor-not-allowed'
               }`}
             >
               <div className='mt-0.5 flex-shrink-0'>
                 {editor.available ? (
-                  <div className='w-4 h-4 rounded-full border-2 border-accent flex items-center justify-center'>
-                    <div className='w-2 h-2 rounded-full bg-accent' />
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-accent' : 'border-border'}`}>
+                    {isSelected && <div className='w-2 h-2 rounded-full bg-accent' />}
                   </div>
                 ) : (
                   <div className='w-4 h-4 rounded-full border-2 border-border' />
@@ -126,7 +135,7 @@ export function EditorsModal() {
                 <p className='text-[11px] text-text-muted mt-0.5'>{editor.description}</p>
               </div>
             </div>
-          ))}
+          );})}
         </div>
 
         <div className='mt-5 pt-4 border-t border-border'>
