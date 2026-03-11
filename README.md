@@ -2,7 +2,7 @@
 
 > Open source code editor theme builder — design, preview, and export themes directly in your browser.
 
-**[Try it ](https://themeforge.app)** · **[Gallery](https://themeforge.app/gallery)** · **[Contributing](CONTRIBUTING.md)**
+**[Try](https://themeforge-code-editor-theme-builder.vercel.app)** · **[Gallery](https://themeforge-code-editor-theme-builder.vercel.app/gallery)** · **[Contributing](CONTRIBUTING.md)**
 
 ---
 
