@@ -1,16 +1,8 @@
-// Core Theme Types for VS Code Theme Studio
+// Core Theme Types for ThemeForge
 
-export type ThemeType = 'dark' | 'light' | 'highContrast';
+export type ThemeType = 'dark' | 'light';
 
 export type FontStyle = 'bold' | 'italic' | 'underline' | 'strikethrough';
-
-export interface FontSettings {
-  fontFamily: string;
-  fontSize: number;
-  fontWeight: number;
-  lineHeight: number;
-  letterSpacing?: number;
-}
 
 export interface TokenColor {
   name: string;
@@ -22,141 +14,52 @@ export interface TokenColor {
   };
 }
 
-export interface UIColors {
-  background: string;
+export interface EditorSettings {
+  fontSize?: number; // 12-20, default 13
+  fontFamily?: string; // 'Consolas', 'Fira Code', etc.
+  lineHeight?: number; // 1.2-2.0, default 1.6
+  terminalFontSize?: number;
+}
+
+// The core theme structure used throughout the app
+export interface SharedTheme {
+  name: string;
+  type: ThemeType;
+  // VS Code UI color keys (editor.background, etc.)
+  colors: Record<string, string>;
+  // Syntax highlighting token rules
+  tokenColors: TokenColor[];
+  // Semantic token colors (TypeScript, etc.)
+  semanticTokenColors?: Record<string, string>;
+  // Editor display settings (preview only, not part of .vsix color theme)
+  editorSettings?: EditorSettings;
+}
+
+// Analysis result types (computed by static algorithms)
+export interface ContrastResult {
+  name: string;
   foreground: string;
-  accent: string;
-  primary: string;
-  secondary: string;
-  success: string;
-  warning: string;
-  error: string;
-  border: string;
-  shadow: string;
+  background: string;
+  ratio: number;
+  wcagLevel: 'AAA' | 'AA' | 'fail';
 }
 
-export interface Theme {
-  id: string;
-  userId: string;
-  name: string;
-  displayName: string;
-  description?: string;
-  themeType: ThemeType;
-  isPublic: boolean;
-  isPublished: boolean;
-
-  // VS Code color keys
-  colors: Record<string, string>;
-
-  // Syntax highlighting
-  tokenColors: TokenColor[];
-
-  // UI-specific colors
-  uiColors: UIColors;
-
-  // Font configuration
-  fontSettings?: FontSettings;
-
-  // Metadata
-  tags: string[];
-  downloadsCount: number;
-  likesCount: number;
-  version: string;
-  parentThemeId?: string;
-
-  // Timestamps
-  createdAt: string;
-  updatedAt: string;
-  publishedAt?: string;
+export interface HarmonyResult {
+  type: 'complementary' | 'analogous' | 'triadic' | 'split-complementary' | 'mixed';
+  score: number; // 0-100
 }
 
-export interface ThemeVersion {
-  id: string;
-  themeId: string;
-  version: string;
-  colors: Record<string, string>;
-  tokenColors: TokenColor[];
-  uiColors: UIColors;
-  fontSettings?: FontSettings;
-  changeDescription?: string;
-  createdAt: string;
+export interface ThemeAnalysis {
+  contrastResults: ContrastResult[];
+  harmonyResult: HarmonyResult;
+  readabilityScore: number; // 0-100
+  overallWcagLevel: 'AAA' | 'AA' | 'fail';
 }
 
-// DTOs
-export interface CreateThemeDTO {
-  name: string;
-  displayName: string;
-  description?: string;
-  themeType: ThemeType;
-  colors: Record<string, string>;
-  tokenColors: TokenColor[];
-  uiColors: UIColors;
-  fontSettings?: FontSettings;
-  tags?: string[];
-}
-
-export interface UpdateThemeDTO {
-  displayName?: string;
-  description?: string;
-  themeType?: ThemeType;
-  colors?: Record<string, string>;
-  tokenColors?: TokenColor[];
-  uiColors?: UIColors;
-  fontSettings?: FontSettings;
-  tags?: string[];
-  isPublic?: boolean;
-  isPublished?: boolean;
-}
-
-// AI Feedback Types
-export interface AIFeedback {
-  overall: {
-    score: number; // 0-1
-    summary: string;
-  };
-  contrast: {
-    issues: ContrastIssue[];
-    score: number;
-  };
-  harmony: {
-    assessment: string;
-    suggestions: string[];
-    score: number;
-  };
-  readability: {
-    issues: ReadabilityIssue[];
-    score: number;
-  };
-  suggestions: ThemeSuggestion[];
-}
-
-export interface ContrastIssue {
-  colorPair: [string, string];
-  contrastRatio: number;
-  wcagLevel: 'AA' | 'AAA' | 'fail';
-  location: string;
-  severity: 'low' | 'medium' | 'high';
-}
-
-export interface ReadabilityIssue {
-  scope: string;
-  issue: string;
-  severity: 'low' | 'medium' | 'high';
-  suggestion?: string;
-}
-
-export interface ThemeSuggestion {
-  type: 'color' | 'font' | 'contrast' | 'harmony';
-  target: string;
-  current: string;
-  suggested: string;
-  reason: string;
-}
-
-// VS Code Extension Types
+// VS Code Extension Export Types
 export interface VSCodeThemeExport {
   name: string;
-  type: 'dark' | 'light' | 'hc';
+  type: 'dark' | 'light';
   colors: Record<string, string>;
   tokenColors: TokenColor[];
 }
@@ -174,7 +77,7 @@ export interface VSCodePackageJSON {
   contributes: {
     themes: Array<{
       label: string;
-      uiTheme: 'vs-dark' | 'vs' | 'hc-black';
+      uiTheme: 'vs-dark' | 'vs';
       path: string;
     }>;
   };
