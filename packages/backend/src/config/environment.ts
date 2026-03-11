@@ -8,6 +8,8 @@ const envSchema = z.object({
   PORT: z.string().default('3001').transform(Number),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
   FRONTEND_URL: z.string().default('http://localhost:3000'),
+  TURSO_DATABASE_URL: z.string().default('file:./data/themes.db'),
+  TURSO_AUTH_TOKEN: z.string().optional(),
 });
 
 export type Environment = z.infer<typeof envSchema>;

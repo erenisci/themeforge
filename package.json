@@ -2,7 +2,7 @@
   "name": "themeforge",
   "version": "1.0.0",
   "private": true,
-  "description": "ThemeForge - AI-powered VS Code theme creation platform - Private Micro-SaaS",
+  "description": "ThemeForge - Open source VS Code and Cursor theme editor",
   "workspaces": [
     "packages/*"
   ],
@@ -10,7 +10,6 @@
     "dev": "turbo run dev",
     "dev:frontend": "turbo run dev --filter=frontend",
     "dev:backend": "turbo run dev --filter=backend",
-    "dev:ai": "turbo run dev --filter=ai-service",
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
@@ -27,5 +26,5 @@
     "npm": ">=10.0.0"
   },
   "author": "",
-  "license": "UNLICENSED"
+  "license": "MIT"
 }
