@@ -46,8 +46,8 @@ export default function PrivacyPage() {
             <li>Timestamp of submission</li>
           </ul>
           <p className='text-sm text-[#a0a0a0] leading-relaxed mt-2'>
-            We do not log your IP address beyond standard server access logs (which are not linked
-            to theme submissions).
+            IP addresses are used solely for rate limiting (abuse prevention) and are not stored
+            linked to theme submissions.
           </p>
         </section>
 
@@ -95,10 +95,16 @@ export default function PrivacyPage() {
 
       <footer className='border-t border-[#2d2d2d] px-6 py-4 text-center'>
         <div className='flex items-center justify-center gap-4 text-xs text-[#555555]'>
-          <Link href='/legal/terms' className='hover:text-[#a0a0a0] transition-colors'>
+          <Link
+            href='/legal/terms'
+            className='hover:text-[#a0a0a0] transition-colors'
+          >
             Terms
           </Link>
-          <Link href='/editor' className='hover:text-[#a0a0a0] transition-colors'>
+          <Link
+            href='/editor'
+            className='hover:text-[#a0a0a0] transition-colors'
+          >
             Editor
           </Link>
         </div>

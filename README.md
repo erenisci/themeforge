@@ -2,15 +2,13 @@
 
 > Open source code editor theme builder — design, preview, and export themes directly in your browser.
 
-**[Open App](https://themeforge-code-editor-theme-builder.vercel.app)** · **[Gallery](https://themeforge-code-editor-theme-builder.vercel.app/gallery)** · **[Contributing](CONTRIBUTING.md)**
-
----
-
 ![preview](packages/frontend/public/preview.png)
 
+**[Open App](https://themeforge-theme-builder.vercel.app)** · **[Gallery](https://themeforge-theme-builder.vercel.app/gallery)** · **[Contributing](CONTRIBUTING.md)** · **[License](LICENSE)**
+
 ---
 
-ThemeForge is a fully client-side theme editor for code editors. Pick colors with an HSV picker, see live syntax highlighting update in real time, check WCAG contrast compliance, and export a ready-to-install `.vsix` file — all without signing up or sending your data anywhere.
+ThemeForge is a fully client-side theme editor for VS Code, Cursor, and other code editors. Pick colors with an HSV picker, see live syntax highlighting in real time, check WCAG contrast compliance, and export a ready-to-install `.vsix` file — all without signing up or sending your data anywhere.
 
 ---
 
@@ -18,30 +16,25 @@ ThemeForge is a fully client-side theme editor for code editors. Pick colors wit
 
 ### Editor
 
-- **Visual color editor** — HSV picker with 2D palette, hue slider, hex input, and 36 presets
-- **Live preview** — editor chrome mockup with syntax highlighting, file explorer, breadcrumbs, status bar, terminal
-- **Multi-language tabs** — JS/TS and Python previews; drag to reorder, open/close freely
-- **File explorer** — click files to switch code view; collapse folders with animated chevron
-- **Undo / Redo** — Ctrl+Z / Ctrl+Y with a full git-style history panel (up to 50 snapshots)
-- **Dark / Light themes** — switch with confirmation to avoid accidental data loss
+- **Visual color picker** — HSV 2D palette, hue slider, hex input, and 36 presets
+- **Live preview** — VS Code chrome mockup with syntax highlighting, file explorer, breadcrumbs, activity bar, status bar, and terminal
+- **Multi-language tabs** — TypeScript and Python previews; drag to reorder, open/close freely
+- **Undo / Redo** — Ctrl+Z / Ctrl+Y with a full history panel (up to 50 snapshots, jumpable)
+- **Dark / Light switch** — confirmation modal if unsaved history exists
+- **Import** — load any existing `.vsix` or `theme.json` file
 
 ### Color Analysis
 
-- **WCAG 2.1 contrast checker** — AA/AAA compliance badges on every color
-- **Color harmony scoring** — complementary, analogous, triadic analysis
+- **WCAG 2.1 contrast checker** — AA / AAA compliance badges on every color pair
+- **Color harmony scoring** — complementary, analogous, triadic hue analysis
 - **Readability score** — checks 7 key token/background pairs
 
-### Import & Export
+### Export & Sharing
 
-- **Import** — load an existing `.vsix` or `theme.json` file
 - **Export to .vsix** — one-click install for VS Code and Cursor (client-side JSZip, no server round-trip)
-- **Includes** `tokenColors` and `semanticTokenColors`
-
-### Sharing
-
 - **Share themes** — generate a permanent link (e.g. `/theme/V1StGXR8_Z`)
-- **View-only mode** — shared links open read-only with an "Edit a copy" button
-- **Gallery** — browse community themes; optionally make yours public when sharing
+- **View-only mode** — shared links open read-only; click "Edit a copy" to fork
+- **Public gallery** — browse and discover community themes
 
 ---
 
@@ -64,11 +57,11 @@ cd packages/shared && npm run build && cd ../..
 ### Run
 
 ```bash
-# Copy env files
+# Copy env files first
 cp packages/backend/.env.example packages/backend/.env
 cp packages/frontend/.env.local.example packages/frontend/.env.local
 
-# Start both (Turborepo)
+# Start everything (Turborepo)
 npm run dev
 ```
 
@@ -92,7 +85,7 @@ NODE_ENV=development
 PORT=3001
 CORS_ORIGIN=http://localhost:3000
 FRONTEND_URL=http://localhost:3000
-TURSO_DATABASE_URL=file:./data/themes.db   # local SQLite for dev; use Turso URL in prod
+TURSO_DATABASE_URL=file:./data/themes.db   # local SQLite; use Turso URL in production
 TURSO_AUTH_TOKEN=                          # leave empty for local dev
 ```
 
@@ -109,71 +102,71 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 themeforge/
 ├── packages/
-│   ├── shared/          # TypeScript types + WCAG/harmony/readability algorithms
+│   ├── shared/          # TypeScript types + WCAG / harmony / readability algorithms
 │   ├── backend/         # Express + Turso (libSQL) — theme sharing API
-│   └── frontend/        # Next.js 14 — editor UI
-├── vercel.json          # Vercel deploy config
+│   └── frontend/        # Next.js 14 App Router — editor UI
+├── vercel.json
 ├── turbo.json
 └── package.json
 ```
 
 ### Backend API
 
-| Method | Path                  | Description                      |
-| ------ | --------------------- | -------------------------------- |
-| `POST` | `/api/themes/share`   | Save a theme, get a shareable ID |
-| `GET`  | `/api/themes/:id`     | Fetch a shared theme by ID       |
-| `GET`  | `/api/themes/gallery` | List public themes (paginated)   |
-| `GET`  | `/health`             | Health check                     |
+| Method | Path                  | Description                      | Rate limit    |
+| ------ | --------------------- | -------------------------------- | ------------- |
+| `POST` | `/api/themes/share`   | Save a theme, get a shareable ID | 5 / hr / IP   |
+| `GET`  | `/api/themes/:id`     | Fetch a shared theme by ID       | —             |
+| `GET`  | `/api/themes/gallery` | List public themes (paginated)   | 30 / min / IP |
+| `GET`  | `/health`             | Health check                     | —             |
 
 ### Frontend Routes
 
-| Route            | Description                                       |
-| ---------------- | ------------------------------------------------- |
-| `/editor`        | Main editor — loads default dark theme            |
-| `/theme/:id`     | View-only shared theme — "Edit a copy" to fork it |
-| `/gallery`       | Community theme browser                           |
-| `/legal/terms`   | Terms of Service                                  |
-| `/legal/privacy` | Privacy Policy                                    |
+| Route            | Description                                     |
+| ---------------- | ----------------------------------------------- |
+| `/editor`        | Main editor — loads default dark theme on start |
+| `/theme/:id`     | View-only shared theme — "Edit a copy" to fork  |
+| `/gallery`       | Community theme browser                         |
+| `/legal/terms`   | Terms of Service                                |
+| `/legal/privacy` | Privacy Policy                                  |
 
 ---
 
 ## How Sharing Works
 
 1. Click **Share** in the toolbar
-2. Optionally enter your name and check **Add to public gallery**
-3. Click **Generate Link** — a permanent URL is created
-4. Anyone opening that link sees it in **view-only** mode
-5. They click **Edit a copy** to fork it into the editor — a new ID is generated each time
+2. Optionally enter a theme name and your name, and check **Add to public gallery**
+3. Click **Generate Link** — a permanent URL is created (nanoid 10-char ID)
+4. Anyone opening that link sees the theme in **view-only** mode
+5. Click **Edit a copy** to fork it into the editor — a new ID is generated on save
 
 ---
 
 ## How Export Works
 
-Click **Export** → choose your editor (VS Code, Cursor, or others as they're added). The file is built client-side using JSZip — no server involved. Includes both `tokenColors` and `semanticTokenColors`.
+Click **Export** in the toolbar → choose your editor (VS Code / Cursor, more coming). The `.vsix` file is built entirely in the browser using JSZip — no server involved. It includes both `tokenColors` and `semanticTokenColors`.
 
-To install in VS Code / Cursor:
+To install in VS Code or Cursor:
 
 - Drag the `.vsix` into the Extensions panel, **or**
 - Run `Extensions: Install from VSIX` from the command palette
 
 ---
 
-## Algorithms
+## Color Analysis
 
-All color analysis runs entirely in the browser — no AI, no external API.
+All analysis runs in the browser — no AI, no external API.
 
 **WCAG 2.1** (`packages/shared/src/algorithms/wcag.ts`):
 
 ```
 relativeLuminance = 0.2126R + 0.7152G + 0.0722B  (after gamma correction)
-contrastRatio = (L1 + 0.05) / (L2 + 0.05)
+contrastRatio     = (L1 + 0.05) / (L2 + 0.05)
 AAA ≥ 7:1 · AA ≥ 4.5:1 · fail < 4.5:1
 ```
 
-**Harmony** (`packages/shared/src/algorithms/harmony.ts`): scores complementary (~180°), analogous (≤30°), and triadic (~120°) hue relationships.
+**Harmony** (`packages/shared/src/algorithms/harmony.ts`): scores complementary (~180°), analogous (≤30°), and triadic (~120°) hue relationships across all token foreground colors.
 
-**Readability** (`packages/shared/src/algorithms/readability.ts`): checks 7 key token/background pairs and returns a percentage score.
+**Readability** (`packages/shared/src/algorithms/readability.ts`): checks 7 key token/background contrast pairs and returns a 0–100 score.
 
 ---
 
@@ -191,7 +184,7 @@ AAA ≥ 7:1 · AA ≥ 4.5:1 · fail < 4.5:1
 
 ## Contributing
 
-Pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new language previews and editor exports.
+Pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new language previews and editor export targets.
 
 For bugs or feature requests, [open an issue](https://github.com/erenisci/themeforge/issues).
 
@@ -199,4 +192,4 @@ For bugs or feature requests, [open an issue](https://github.com/erenisci/themef
 
 ## License
 
-MIT © [erenisci](https://github.com/erenisci) — see [LICENSE](LICENSE) for details.
+[MIT](LICENSE) © [erenisci](https://github.com/erenisci)

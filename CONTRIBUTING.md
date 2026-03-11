@@ -1,21 +1,21 @@
 # Contributing to ThemeForge
 
-ThemeForge is open source and designed to be extended. The two most impactful contributions are **adding a new language preview** and **adding a new editor export**.
+ThemeForge is open source and built to be extended. The two most impactful contributions are **adding a new language preview** and **adding a new editor export target**.
 
 ---
 
 ## Table of Contents
 
-- [Adding a New Language](#adding-a-new-language)
-- [Adding a New Editor](#adding-a-new-editor)
+- [Adding a New Language Preview](#adding-a-new-language-preview)
+- [Adding a New Editor Export](#adding-a-new-editor-export)
 - [Project Structure](#project-structure)
 - [Submitting a PR](#submitting-a-pr)
 
 ---
 
-## Adding a New Language
+## Adding a New Language Preview
 
-Language previews live in `packages/frontend/src/data/languages/`.
+Language previews live in `packages/frontend/src/data/languages/`. Each language is a static definition — no runtime parsing, no external libraries.
 
 ### Step 1 — Create the language file
 
@@ -113,11 +113,11 @@ import { languageRust } from './language-rust';
 export const LANGUAGES: Record<string, LanguageDefinition> = {
   typescript: languageTypeScript,
   python: languagePython,
-  rust: languageRust, // <- add here
+  rust: languageRust, // ← add here
 };
 ```
 
-### Step 4 — Update the ActiveLanguage type
+### Step 4 — Update the `ActiveLanguage` type
 
 Open `packages/frontend/src/store/ui.store.ts`:
 
@@ -144,18 +144,12 @@ That's it. The tab bar `+` button will automatically show your language as an op
 { text: 'x', scope: 'variable' },
 ```
 
-**Tokens without a scope use `editor.foreground`:**
+**Tokens without a `scope` use `editor.foreground`:**
 
 ```ts
-{
-  text: '(';
-} // punctuation
-{
-  text: ' ';
-} // space
-{
-  text: ': ';
-} // colon + space
+{ text: '(' }   // punctuation
+{ text: ' ' }   // space
+{ text: ': ' }  // colon + space
 ```
 
 ### TextMate Scopes
@@ -164,16 +158,16 @@ That's it. The tab bar `+` button will automatically show your language as an op
 | ------------------------ | --------------------------------------------- |
 | `keyword`                | General keywords (`fn`, `class`, `struct`)    |
 | `keyword.control`        | Control flow (`if`, `for`, `while`, `return`) |
-| `keyword.control.import` | Import/use statements                         |
+| `keyword.control.import` | Import / use statements                       |
 | `keyword.operator`       | Operators (`=`, `+`, `*`, `->`)               |
 | `string`                 | String literals                               |
 | `constant.numeric`       | Numbers                                       |
 | `comment`                | Comments                                      |
-| `entity.name.function`   | Function/method names                         |
-| `entity.name.class`      | Class/struct names                            |
+| `entity.name.function`   | Function / method names                       |
+| `entity.name.class`      | Class / struct names                          |
 | `entity.name.type`       | Type names                                    |
-| `entity.name.module`     | Module/namespace names                        |
-| `entity.name.tag`        | HTML/JSX tags                                 |
+| `entity.name.module`     | Module / namespace names                      |
+| `entity.name.tag`        | HTML / JSX tags                               |
 | `variable`               | Variables                                     |
 | `variable.parameter`     | Function parameters                           |
 | `variable.language`      | `self`, `this`                                |
@@ -187,21 +181,21 @@ That's it. The tab bar `+` button will automatically show your language as an op
 { highlight: 'selection', tokens: [...] }  // editor.selectionBackground
 ```
 
-Use one `'line'` and one `'selection'` per preview.
+Use one `'line'` and one `'selection'` per language preview.
 
 ### Good Preview Checklist
 
 - 18–22 lines total
-- Includes: imports, a type/struct, at least one function, a comment
-- Has `highlight: 'line'` on a comment or keyword line
+- Includes: imports, a type / struct, at least one function, a comment
+- Has `highlight: 'line'` on a comment or declaration line
 - Has `highlight: 'selection'` on an interesting expression
 - Covers most common scopes so all color panels show meaningful values
 
 ---
 
-## Adding a New Editor
+## Adding a New Editor Export
 
-> VS Code / Cursor is the only active editor today. Others are listed as "coming soon" in the Editors modal.
+> VS Code / Cursor is the only fully active export today. Vim, JetBrains, Sublime Text, and Zed are listed as "coming soon" in the Editors modal.
 
 To add a new editor (e.g. Vim), you need two things:
 
@@ -212,8 +206,8 @@ To add a new editor (e.g. Vim), you need two things:
 
 ```
 packages/frontend/src/editors/<editor-id>/
-  chrome.tsx     ← React preview component
-  export.ts      ← export function
+  chrome.tsx    ← React preview component
+  export.ts     ← export function
 ```
 
 ### Step 2 — Build the preview component (`chrome.tsx`)
@@ -264,7 +258,7 @@ export async function buildVimExport(theme: SharedTheme): Promise<Blob> {
 }
 ```
 
-### Step 4 — Enable in EditorsModal
+### Step 4 — Enable in `EditorsModal`
 
 Open `packages/frontend/src/components/modals/EditorsModal.tsx` and update the `EDITORS` array:
 
@@ -273,14 +267,14 @@ Open `packages/frontend/src/components/modals/EditorsModal.tsx` and update the `
   id: 'vim',
   label: 'Vim / Neovim',
   description: 'Export as .vim colorscheme file.',
-  available: true,       // ← change this
-  exportFormat: '.vim',  // ← add this
+  available: true,       // ← change from false
+  exportFormat: '.vim',
 },
 ```
 
-### Step 5 — Wire the export
+### Step 5 — Wire the export in `ExportModal`
 
-Open `packages/frontend/src/components/modals/ExportModal.tsx` and add a config entry:
+Open `packages/frontend/src/components/modals/ExportModal.tsx` and add a config entry to `EDITOR_EXPORT_CONFIG`:
 
 ```ts
 const EDITOR_EXPORT_CONFIG = {
@@ -293,7 +287,7 @@ const EDITOR_EXPORT_CONFIG = {
 };
 ```
 
-Then wire the button's `onClick` to call your `buildVimExport` function and trigger a file download.
+Then wire the button's `onClick` to call your `buildVimExport` and trigger a browser file download.
 
 ---
 
@@ -302,47 +296,50 @@ Then wire the button's `onClick` to call your `buildVimExport` function and trig
 ```
 packages/
   shared/src/
-    types/theme.types.ts       ← SharedTheme, TokenColor, EditorSettings
-    algorithms/wcag.ts         ← WCAG 2.1 contrast math
-    algorithms/harmony.ts      ← color harmony analysis
-    algorithms/readability.ts  ← readability scoring
+    types/theme.types.ts         ← SharedTheme, TokenColor, VSCodeThemeExport
+    algorithms/wcag.ts           ← WCAG 2.1 contrast math
+    algorithms/harmony.ts        ← color harmony scoring
+    algorithms/readability.ts    ← readability score (7 pairs)
 
   backend/src/
-    modules/themes/            ← POST /share, GET /:id, GET /gallery
-    config/database.ts         ← Turso / libSQL setup
-    middleware/rate-limit.ts   ← share (5/hr) + gallery (30/min) limiters
+    modules/themes/              ← POST /share, GET /:id, GET /gallery
+    config/database.ts           ← Turso / libSQL client + schema init
+    config/environment.ts        ← zod-validated env vars
+    middleware/rate-limit.ts     ← share (5/hr) + gallery (30/min) limiters
 
   frontend/src/
     app/
-      editor/                  ← main editor page
-      theme/[id]/              ← view-only shared theme
-      gallery/                 ← public theme browser
-      legal/                   ← terms + privacy
+      editor/                    ← main editor page
+      theme/[id]/                ← view-only shared theme
+      gallery/                   ← public theme browser
+      legal/                     ← terms + privacy
 
-    data/languages/            ← ADD LANGUAGES HERE
-      types.ts                 ← LanguageDefinition interface
-      index.ts                 ← language registry
+    data/languages/              ← ADD LANGUAGES HERE
+      types.ts                   ← LanguageDefinition, LanguageLine, LanguageToken
+      index.ts                   ← LANGUAGES registry
       language-typescript.ts
       language-python.ts
 
-    editors/                   ← ADD EDITORS HERE
+    editors/                     ← ADD EDITOR EXPORTS HERE
 
     store/
-      theme.store.ts           ← SharedTheme state + history + analysis
-      ui.store.ts              ← panels, modals, active editor/language/tabs
+      theme.store.ts             ← SharedTheme state, undo/redo history, analysis
+      ui.store.ts                ← panels, modals, active editor / language / tabs
 
     lib/
-      vsix-builder.ts          ← .vsix export (VS Code / Cursor)
-      theme-importer.ts        ← import .vsix or theme.json
-      default-themes.ts        ← defaultDark and defaultLight palettes
+      vsix-builder.ts            ← .vsix export (VS Code / Cursor)
+      theme-importer.ts          ← import .vsix or theme.json
+      default-themes.ts          ← defaultDark and defaultLight palettes
 
     components/
-      preview/VSCodeChrome.tsx    ← VS Code UI mockup
-      preview/TokenizedCode.tsx   ← syntax renderer
-      modals/EditorsModal.tsx     ← editor chooser
-      modals/ExportModal.tsx      ← export dialog
-      modals/ShareModal.tsx       ← share + gallery toggle
-      panels/                     ← right-side property panels
+      preview/VSCodeChrome.tsx   ← VS Code UI mockup
+      preview/TokenizedCode.tsx  ← syntax renderer
+      modals/EditorsModal.tsx    ← editor chooser
+      modals/ExportModal.tsx     ← export dialog
+      modals/ShareModal.tsx      ← share + gallery toggle
+      panels/                    ← right-side property panels (UI, Syntax, Semantic, Terminal, Score, History)
+      editor/Toolbar.tsx         ← top toolbar (name, type, undo/redo, import, export, share)
+      editor/EditorLayout.tsx    ← 3-panel layout + keyboard shortcuts
 ```
 
 ---
