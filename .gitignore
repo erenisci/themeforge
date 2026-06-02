@@ -58,6 +58,10 @@ yarn-error.log*
 .claude/
 CLAUDE.md
 
+# Local-only docs (not published to GitHub)
+docs/DEPLOYMENT.md
+docs/PROGRESS.md
+
 # SQLite / local database files
 packages/backend/data/*.db
 packages/backend/data/*.db-shm

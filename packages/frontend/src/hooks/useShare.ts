@@ -19,7 +19,12 @@ export function useShare() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.post<ShareResponse>('/api/themes/share', { name, theme, authorName: authorName || undefined, isPublic });
+      const res = await api.post<ShareResponse>('/api/themes/share', {
+        name,
+        theme,
+        authorName: authorName || undefined,
+        isPublic,
+      });
       // Construct frontend URL from the returned ID
       const frontendUrl = `${window.location.origin}/theme/${res.id}`;
       setShareUrl(frontendUrl);

@@ -17,7 +17,9 @@ export function HistoryPanel() {
   return (
     <div className='flex flex-col h-full'>
       <div className='flex items-center justify-between px-4 py-3 border-b border-border'>
-        <h2 className='text-xs font-semibold text-text-secondary uppercase tracking-wide'>History</h2>
+        <h2 className='text-xs font-semibold text-text-secondary uppercase tracking-wide'>
+          History
+        </h2>
         {history.length > 0 && (
           <button
             onClick={clearHistory}
@@ -35,8 +37,18 @@ export function HistoryPanel() {
           disabled={!canUndo}
           className='flex-1 flex items-center justify-center gap-1.5 h-7 rounded text-xs bg-surface-2 hover:bg-surface-3 text-text-secondary transition-colors disabled:opacity-30 disabled:cursor-not-allowed'
         >
-          <svg className='w-3 h-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6' />
+          <svg
+            className='w-3 h-3'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6'
+            />
           </svg>
           Undo
         </button>
@@ -46,8 +58,18 @@ export function HistoryPanel() {
           className='flex-1 flex items-center justify-center gap-1.5 h-7 rounded text-xs bg-surface-2 hover:bg-surface-3 text-text-secondary transition-colors disabled:opacity-30 disabled:cursor-not-allowed'
         >
           Redo
-          <svg className='w-3 h-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6' />
+          <svg
+            className='w-3 h-3'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6'
+            />
           </svg>
         </button>
       </div>
@@ -55,7 +77,9 @@ export function HistoryPanel() {
       <div className='flex-1 overflow-y-auto'>
         {history.length === 0 ? (
           <p className='px-4 py-6 text-xs text-text-muted text-center'>
-            No history yet.<br />Start editing to track changes.
+            No history yet.
+            <br />
+            Start editing to track changes.
           </p>
         ) : (
           <div className='py-1'>
@@ -79,7 +103,9 @@ export function HistoryPanel() {
                 >
                   <div className='w-1.5 h-1.5 rounded-full bg-surface-4 group-hover:bg-text-muted flex-shrink-0' />
                   <span className='text-xs text-text-secondary flex-1 truncate'>{entry.label}</span>
-                  <span className='text-[10px] text-text-muted flex-shrink-0'>{timeAgo(entry.timestamp)}</span>
+                  <span className='text-[10px] text-text-muted flex-shrink-0'>
+                    {timeAgo(entry.timestamp)}
+                  </span>
                 </button>
               );
             })}

@@ -1,3 +1,4 @@
+import { Logo } from '@/components/ui/Logo';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -10,76 +11,59 @@ export default function PrivacyPage() {
   return (
     <div className='min-h-screen bg-[#080808] text-[#f0f0f0]'>
       <header className='border-b border-[#2d2d2d] px-6 py-4'>
-        <Link
-          href='/editor'
-          className='flex items-center gap-2 w-fit text-[#f0f0f0] hover:text-white transition-colors'
-        >
-          <svg
-            className='w-5 h-5 text-[#5865f2]'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth={2}
-          >
-            <path d='M12 2L2 7l10 5 10-5-10-5' />
-            <path d='M2 17l10 5 10-5' />
-            <path d='M2 12l10 5 10-5' />
-          </svg>
-          <span className='font-semibold text-sm'>ThemeForge</span>
-        </Link>
+        <Logo />
       </header>
 
       <main className='max-w-2xl mx-auto px-6 py-12'>
         <h1 className='text-xl font-bold mb-2'>Privacy Policy</h1>
-        <p className='text-[#a0a0a0] text-xs mb-8'>Effective: March 2025</p>
+        <p className='text-[#a0a0a0] text-xs mb-8'>Last updated: June 2026</p>
 
         <section className='mb-6'>
-          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>What we collect</h2>
+          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>No accounts, no tracking</h2>
           <p className='text-sm text-[#a0a0a0] leading-relaxed'>
-            ThemeForge does not require accounts or collect personal information. When you share a
-            theme, we store:
+            ThemeForge does not require an account and does not collect personal information. We use
+            no cookies, no analytics, and no third-party tracking. Everything you do in the editor
+            happens locally in your browser.
+          </p>
+        </section>
+
+        <section className='mb-6'>
+          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>What we store</h2>
+          <p className='text-sm text-[#a0a0a0] leading-relaxed'>
+            We only store data when you explicitly choose to share a theme. In that case we save:
           </p>
           <ul className='mt-2 space-y-1 text-sm text-[#a0a0a0] list-disc list-inside'>
-            <li>The theme data (color codes only — no code, no text)</li>
-            <li>An optional display name for the theme</li>
-            <li>An optional author name you provide</li>
-            <li>Timestamp of submission</li>
+            <li>The theme data (color values only — no source code, no documents)</li>
+            <li>An optional theme name and author name, if you provide them</li>
+            <li>A timestamp</li>
           </ul>
           <p className='text-sm text-[#a0a0a0] leading-relaxed mt-2'>
-            IP addresses are used solely for rate limiting (abuse prevention) and are not stored
-            linked to theme submissions.
+            If you never click “Share”, nothing is sent to or stored on our servers.
           </p>
         </section>
 
         <section className='mb-6'>
-          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>Cookies</h2>
+          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>Shared &amp; public themes</h2>
           <p className='text-sm text-[#a0a0a0] leading-relaxed'>
-            We do not use cookies or any tracking technology. No analytics scripts are loaded.
+            A shared theme is reachable by anyone who has its link. If you opt in to the gallery,
+            the theme is also listed publicly. Don’t put anything private in a theme name or author
+            field. We don’t guarantee permanent storage — shared themes may be removed over time.
           </p>
         </section>
 
         <section className='mb-6'>
-          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>Shared themes</h2>
+          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>Hosting</h2>
           <p className='text-sm text-[#a0a0a0] leading-relaxed'>
-            Shared themes are accessible to anyone with the link. Public themes (opted in via the
-            gallery checkbox) are additionally listed on the gallery page. We do not guarantee
-            permanent storage — themes may be purged after an extended period of inactivity.
+            The app and its sharing service run on third-party hosting providers, which may keep
+            standard server logs (such as IP addresses and request metadata) under their own privacy
+            policies. We use these logs only to keep the service running and to prevent abuse.
           </p>
         </section>
 
         <section className='mb-6'>
-          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>Third-party services</h2>
+          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>Removing a theme</h2>
           <p className='text-sm text-[#a0a0a0] leading-relaxed'>
-            The frontend is hosted on Vercel. The backend is hosted on Render. Database is provided
-            by Turso. These providers may collect standard infrastructure logs (IP addresses,
-            request metadata) per their own privacy policies.
-          </p>
-        </section>
-
-        <section className='mb-6'>
-          <h2 className='text-sm font-semibold mb-2 text-[#f0f0f0]'>Contact</h2>
-          <p className='text-sm text-[#a0a0a0] leading-relaxed'>
-            Questions or takedown requests? Open an issue on{' '}
+            Want a shared theme taken down, or have a question? Open an issue on{' '}
             <a
               href='https://github.com/erenisci/themeforge/issues'
               className='text-[#5865f2] hover:underline'

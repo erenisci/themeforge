@@ -119,10 +119,16 @@ export const languageTypeScript: LanguageDefinition = {
           tokens: [
             { text: '      <' },
             { text: 'h1', scope: 'entity.name.tag' },
-            { text: '>{label}</h1>' },
+            { text: '>{' },
+            { text: 'label', scope: 'variable' },
+            { text: '}</' },
+            { text: 'h1', scope: 'entity.name.tag' },
+            { text: '>' },
           ],
         },
-        { tokens: [{ text: '    </div>' }] },
+        {
+          tokens: [{ text: '    </' }, { text: 'div', scope: 'entity.name.tag' }, { text: '>' }],
+        },
         { tokens: [{ text: '  )' }] },
         { tokens: [{ text: '}' }] },
       ],

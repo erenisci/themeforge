@@ -2,8 +2,8 @@ import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-import { env } from './config/environment';
 import { initDb } from './config/database';
+import { env } from './config/environment';
 import { errorHandler } from './middleware/error-handler';
 import { notFoundHandler } from './middleware/not-found';
 import { apiLimiter } from './middleware/rate-limit';
@@ -27,13 +27,15 @@ app.use('/api/themes', themesRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-initDb().then(() => {
-  app.listen(env.PORT, () => {
-    console.log(`ThemeForge Backend running on port ${env.PORT}`);
+initDb()
+  .then(() => {
+    app.listen(env.PORT, () => {
+      console.log(`ThemeForge Backend running on port ${env.PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
   });
-}).catch(err => {
-  console.error('Failed to initialize database:', err);
-  process.exit(1);
-});
 
 export default app;

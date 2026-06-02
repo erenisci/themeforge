@@ -4,9 +4,7 @@ import { env } from '../../config/environment';
 import { NotFoundError, ValidationError } from '../../utils/errors';
 import { getPublicThemes, getTheme, saveTheme } from './themes.service';
 
-const hexColor = z
-  .string()
-  .regex(/^#[0-9a-fA-F]{6}$/, 'Must be a valid hex color (#rrggbb)');
+const hexColor = z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Must be a valid hex color (#rrggbb)');
 
 const shareSchema = z.object({
   name: z.string().max(100).optional(),

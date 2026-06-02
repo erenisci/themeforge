@@ -1,7 +1,7 @@
 'use client';
 
-import { LANGUAGES } from '@/data/languages';
 import type { LanguageLine } from '@/data/languages';
+import { LANGUAGES } from '@/data/languages';
 import { useThemeStore } from '@/store/theme.store';
 import { useUIStore } from '@/store/ui.store';
 import type { TokenColor } from '@themeforge/shared';
@@ -34,11 +34,20 @@ interface TokenizedCodeProps {
   lines?: LanguageLine[];
 }
 
+// Which properties panel owns a given preview token scope (syntax vs semantic).
+function panelForScope(scope: string): 'syntax' | 'semantic' {
+  return scope.startsWith('semantic.') ? 'semantic' : 'syntax';
+}
+
 export function TokenizedCode({ lines: linesProp }: TokenizedCodeProps = {}) {
   const theme = useThemeStore(s => s.theme);
   const activeLanguage = useUIStore(s => s.activeLanguage);
   const focusedColorKey = useUIStore(s => s.focusedColorKey);
   const hoveredColorKey = useUIStore(s => s.hoveredColorKey);
+  const setActivePanel = useUIStore(s => s.setActivePanel);
+  const setFocusedColorKey = useUIStore(s => s.setFocusedColorKey);
+  const setHoveredColorKey = useUIStore(s => s.setHoveredColorKey);
+  const isReadOnly = useUIStore(s => s.isReadOnly);
   const { colors, tokenColors } = theme;
 
   const bg = colors['editor.background'] || '#1e1e1e';
@@ -111,10 +120,27 @@ export function TokenizedCode({ lines: linesProp }: TokenizedCodeProps = {}) {
                       </span>
                     );
                   }
+                  const scope = token.scope;
                   return (
                     <span
                       key={tokIdx}
-                      style={{ color: c(token.scope), ...hoverHl(token.scope), ...hl(token.scope) }}
+                      style={{
+                        color: c(scope),
+                        ...hoverHl(scope),
+                        ...hl(scope),
+                        cursor: isReadOnly ? undefined : 'pointer',
+                      }}
+                      title={isReadOnly ? undefined : `${scope} — click to edit its color`}
+                      onClick={
+                        isReadOnly
+                          ? undefined
+                          : () => {
+                              setActivePanel(panelForScope(scope));
+                              setFocusedColorKey(scope);
+                            }
+                      }
+                      onMouseEnter={isReadOnly ? undefined : () => setHoveredColorKey(scope)}
+                      onMouseLeave={isReadOnly ? undefined : () => setHoveredColorKey(null)}
                     >
                       {token.text}
                     </span>

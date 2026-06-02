@@ -5,6 +5,7 @@ import { ContrastBadge } from '@/components/ui/Badge';
 import { useThemeStore } from '@/store/theme.store';
 import { useUIStore } from '@/store/ui.store';
 import { contrastRatio, wcagLevel } from '@themeforge/shared';
+import { useEffect, useRef } from 'react';
 
 const SYNTAX_TOKENS = [
   { scope: 'keyword', label: 'Keyword' },
@@ -38,7 +39,24 @@ function buildFontStyle(flags: string[]): string {
 
 export function SyntaxPanel() {
   const { theme, setTokenColor, setTokenFontStyle } = useThemeStore();
-  const { setFocusedColorKey, setHoveredColorKey } = useUIStore();
+  const { focusedColorKey, setFocusedColorKey, setHoveredColorKey } = useUIStore();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // When a token is clicked in the preview, scroll its row into view.
+  useEffect(() => {
+    if (!focusedColorKey || !containerRef.current) return;
+    const el = containerRef.current.querySelector<HTMLElement>(
+      `[data-color-key="${CSS.escape(focusedColorKey)}"]`,
+    );
+    el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, [focusedColorKey]);
+
+  // If the clicked scope is not in the preset list, show an editor for it at the top.
+  const isPreset = SYNTAX_TOKENS.some(t => t.scope === focusedColorKey);
+  const selectedExtraScope =
+    focusedColorKey && !isPreset && !focusedColorKey.startsWith('semantic.')
+      ? focusedColorKey
+      : null;
 
   function getToken(scope: string) {
     for (const token of theme.tokenColors) {
@@ -65,10 +83,45 @@ export function SyntaxPanel() {
   const bg = theme.colors['editor.background'] || '#1e1e1e';
 
   return (
-    <div className='flex flex-col gap-4 p-4'>
+    <div
+      ref={containerRef}
+      className='flex flex-col gap-4 p-4'
+    >
       <h3 className='text-xs font-semibold uppercase tracking-widest text-text-muted'>
         Syntax Colors
       </h3>
+
+      {selectedExtraScope &&
+        (() => {
+          const color = getTokenColor(selectedExtraScope);
+          const ratio = contrastRatio(color, bg);
+          const level = wcagLevel(ratio);
+          return (
+            <div
+              data-color-key={selectedExtraScope}
+              className='flex flex-col gap-1.5 rounded-md border border-accent/40 bg-surface-2 p-2'
+            >
+              <span className='text-[10px] uppercase tracking-widest text-accent'>
+                Selected Token
+              </span>
+              <span className='text-xs text-text-muted break-all'>{selectedExtraScope}</span>
+              <ColorPicker
+                value={color}
+                onChange={hex => setTokenColor(selectedExtraScope, hex)}
+                badge={
+                  <ContrastBadge
+                    level={level}
+                    ratio={ratio}
+                  />
+                }
+                onFocus={() => setFocusedColorKey(selectedExtraScope)}
+                onBlur={() => setFocusedColorKey(null)}
+                onHover={() => setHoveredColorKey(selectedExtraScope)}
+                onLeave={() => setHoveredColorKey(null)}
+              />
+            </div>
+          );
+        })()}
 
       {SYNTAX_TOKENS.map(({ scope, label }) => {
         const color = getTokenColor(scope);
@@ -79,6 +132,7 @@ export function SyntaxPanel() {
         return (
           <div
             key={scope}
+            data-color-key={scope}
             className='flex flex-col gap-1.5'
           >
             <div className='flex items-center justify-between'>

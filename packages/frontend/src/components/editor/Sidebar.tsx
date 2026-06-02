@@ -41,15 +41,16 @@ const ITEMS: { panel: ActivePanel; label: string; icon: string }[] = [
 ];
 
 export function Sidebar() {
-  const { activePanel, setActivePanel, sidebarCollapsed, toggleSidebar, openEditorsModal } = useUIStore();
+  const { activePanel, setActivePanel, sidebarCollapsed, toggleSidebar, openEditorsModal } =
+    useUIStore();
 
   return (
     <div
-      className="flex flex-col py-3 gap-1 border-r border-border bg-surface-1 flex-shrink-0 transition-all duration-200"
+      className='flex flex-col py-3 gap-1 border-r border-border bg-surface-1 flex-shrink-0 transition-all duration-200'
       style={{ width: sidebarCollapsed ? 48 : 160 }}
     >
       {/* Nav items */}
-      <div className="flex flex-col gap-1 flex-1">
+      <div className='flex flex-col gap-1 flex-1'>
         {ITEMS.map(({ panel, label, icon }) => {
           const isActive = activePanel === panel;
           return (
@@ -66,21 +67,29 @@ export function Sidebar() {
               }`}
             >
               {isActive && (
-                <div className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r bg-accent" />
+                <div className='absolute left-0 top-2 bottom-2 w-0.5 rounded-r bg-accent' />
               )}
-              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={icon} />
+              <svg
+                className='w-4 h-4 flex-shrink-0'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={1.5}
+                  d={icon}
+                />
               </svg>
-              {!sidebarCollapsed && (
-                <span className="text-xs font-medium truncate">{label}</span>
-              )}
+              {!sidebarCollapsed && <span className='text-xs font-medium truncate'>{label}</span>}
             </button>
           );
         })}
       </div>
 
       {/* Bottom section: Editors + collapse */}
-      <div className="border-t border-border pt-1 mt-1 flex flex-col gap-1">
+      <div className='border-t border-border pt-1 mt-1 flex flex-col gap-1'>
         <button
           onClick={openEditorsModal}
           title={sidebarCollapsed ? 'Editors' : undefined}
@@ -88,27 +97,41 @@ export function Sidebar() {
             sidebarCollapsed ? 'w-10 h-10 justify-center' : 'h-9 px-3'
           }`}
         >
-          <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 15V5.25m19.5 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 7.409a2.25 2.25 0 01-1.07-1.916V5.25" />
+          <svg
+            className='w-4 h-4 flex-shrink-0'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={1.5}
+              d='M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 15V5.25m19.5 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 7.409a2.25 2.25 0 01-1.07-1.916V5.25'
+            />
           </svg>
-          {!sidebarCollapsed && (
-            <span className="text-xs font-medium truncate">Editors</span>
-          )}
+          {!sidebarCollapsed && <span className='text-xs font-medium truncate'>Editors</span>}
         </button>
 
         <button
           onClick={toggleSidebar}
           title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className="mx-1 flex items-center justify-center w-10 h-8 rounded-md text-text-muted hover:text-text-secondary hover:bg-surface-2 transition-colors self-center"
+          className='mx-1 flex items-center justify-center w-10 h-8 rounded-md text-text-muted hover:text-text-secondary hover:bg-surface-2 transition-colors self-center'
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className='w-4 h-4'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              strokeLinecap='round'
+              strokeLinejoin='round'
               strokeWidth={1.5}
-              d={sidebarCollapsed
-                ? 'M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'
-                : 'M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18'
+              d={
+                sidebarCollapsed
+                  ? 'M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'
+                  : 'M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18'
               }
             />
           </svg>

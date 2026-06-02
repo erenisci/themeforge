@@ -1,3 +1,4 @@
+import { Logo } from '@/components/ui/Logo';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -47,23 +48,7 @@ export default async function GalleryPage() {
     <div className='min-h-screen bg-[#080808] text-[#f0f0f0]'>
       <header className='border-b border-[#2d2d2d] px-6 py-4 flex items-center justify-between'>
         <div className='flex items-center gap-3'>
-          <Link
-            href='/editor'
-            className='flex items-center gap-2 text-[#f0f0f0] hover:text-white transition-colors'
-          >
-            <svg
-              className='w-5 h-5 text-[#5865f2]'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth={2}
-            >
-              <path d='M12 2L2 7l10 5 10-5-10-5' />
-              <path d='M2 17l10 5 10-5' />
-              <path d='M2 12l10 5 10-5' />
-            </svg>
-            <span className='font-semibold text-sm'>ThemeForge</span>
-          </Link>
+          <Logo />
           <span className='text-[#2d2d2d]'>/</span>
           <span className='text-sm text-[#a0a0a0]'>Gallery</span>
         </div>
@@ -78,9 +63,7 @@ export default async function GalleryPage() {
       <main className='max-w-5xl mx-auto px-6 py-10'>
         <div className='mb-8'>
           <h1 className='text-2xl font-bold mb-1'>Theme Gallery</h1>
-          <p className='text-sm text-[#a0a0a0]'>
-            Community-shared themes for VS Code and Cursor.
-          </p>
+          <p className='text-sm text-[#a0a0a0]'>Community-shared themes for VS Code and Cursor.</p>
         </div>
 
         {themes.length === 0 ? (

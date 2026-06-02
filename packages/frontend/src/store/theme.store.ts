@@ -107,11 +107,7 @@ interface ThemeState {
   clearHistory: () => void;
 }
 
-function pushHistory(
-  history: HistoryEntry[],
-  theme: SharedTheme,
-  label: string,
-): HistoryEntry[] {
+function pushHistory(history: HistoryEntry[], theme: SharedTheme, label: string): HistoryEntry[] {
   const entry: HistoryEntry = { theme, label, timestamp: Date.now() };
   return [...history.slice(-MAX_HISTORY + 1), entry];
 }
@@ -239,7 +235,15 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
   },
 
   loadTheme: theme => {
-    set({ theme, analysis: computeAnalysis(theme), isDirty: false, history: [], future: [], canUndo: false, canRedo: false });
+    set({
+      theme,
+      analysis: computeAnalysis(theme),
+      isDirty: false,
+      history: [],
+      future: [],
+      canUndo: false,
+      canRedo: false,
+    });
   },
 
   undo: () => {
@@ -247,7 +251,10 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     if (history.length === 0) return;
     const prev = history[history.length - 1];
     const newHistory = history.slice(0, -1);
-    const newFuture: HistoryEntry[] = [{ theme, label: 'Current', timestamp: Date.now() }, ...future];
+    const newFuture: HistoryEntry[] = [
+      { theme, label: 'Current', timestamp: Date.now() },
+      ...future,
+    ];
     set({
       theme: prev.theme,
       analysis: computeAnalysis(prev.theme),

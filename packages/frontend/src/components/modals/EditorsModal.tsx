@@ -90,52 +90,55 @@ export function EditorsModal() {
           {EDITORS.map(editor => {
             const isSelected = activeEditor === editor.id;
             return (
-            <div
-              key={editor.id}
-              onClick={() => {
-                if (!editor.available) return;
-                setActiveEditor(editor.id as ActiveEditor);
-                closeEditorsModal();
-              }}
-              className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
-                editor.available
-                  ? isSelected
-                    ? 'border-accent bg-accent/10 cursor-pointer'
-                    : 'border-border hover:border-accent/50 hover:bg-accent/5 cursor-pointer'
-                  : 'border-border opacity-50 cursor-not-allowed'
-              }`}
-            >
-              <div className='mt-0.5 flex-shrink-0'>
-                {editor.available ? (
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-accent' : 'border-border'}`}>
-                    {isSelected && <div className='w-2 h-2 rounded-full bg-accent' />}
-                  </div>
-                ) : (
-                  <div className='w-4 h-4 rounded-full border-2 border-border' />
-                )}
-              </div>
-              <div className='flex-1 min-w-0'>
-                <div className='flex items-center gap-2'>
-                  <span className='text-xs font-medium text-text-primary'>{editor.label}</span>
+              <div
+                key={editor.id}
+                onClick={() => {
+                  if (!editor.available) return;
+                  setActiveEditor(editor.id as ActiveEditor);
+                  closeEditorsModal();
+                }}
+                className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
+                  editor.available
+                    ? isSelected
+                      ? 'border-accent bg-accent/10 cursor-pointer'
+                      : 'border-border hover:border-accent/50 hover:bg-accent/5 cursor-pointer'
+                    : 'border-border opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <div className='mt-0.5 flex-shrink-0'>
                   {editor.available ? (
-                    <span className='text-[9px] px-1.5 py-0.5 rounded-full bg-accent/20 text-accent font-medium'>
-                      Active
-                    </span>
+                    <div
+                      className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-accent' : 'border-border'}`}
+                    >
+                      {isSelected && <div className='w-2 h-2 rounded-full bg-accent' />}
+                    </div>
                   ) : (
-                    <span className='text-[9px] px-1.5 py-0.5 rounded-full bg-surface-3 text-text-muted font-medium'>
-                      Coming soon
-                    </span>
-                  )}
-                  {editor.exportFormat && (
-                    <span className='text-[9px] px-1.5 py-0.5 rounded bg-surface-3 text-text-muted font-mono'>
-                      {editor.exportFormat}
-                    </span>
+                    <div className='w-4 h-4 rounded-full border-2 border-border' />
                   )}
                 </div>
-                <p className='text-[11px] text-text-muted mt-0.5'>{editor.description}</p>
+                <div className='flex-1 min-w-0'>
+                  <div className='flex items-center gap-2'>
+                    <span className='text-xs font-medium text-text-primary'>{editor.label}</span>
+                    {editor.available ? (
+                      <span className='text-[9px] px-1.5 py-0.5 rounded-full bg-accent/20 text-accent font-medium'>
+                        Active
+                      </span>
+                    ) : (
+                      <span className='text-[9px] px-1.5 py-0.5 rounded-full bg-surface-3 text-text-muted font-medium'>
+                        Coming soon
+                      </span>
+                    )}
+                    {editor.exportFormat && (
+                      <span className='text-[9px] px-1.5 py-0.5 rounded bg-surface-3 text-text-muted font-mono'>
+                        {editor.exportFormat}
+                      </span>
+                    )}
+                  </div>
+                  <p className='text-[11px] text-text-muted mt-0.5'>{editor.description}</p>
+                </div>
               </div>
-            </div>
-          );})}
+            );
+          })}
         </div>
 
         <div className='mt-5 pt-4 border-t border-border'>

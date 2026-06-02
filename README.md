@@ -18,6 +18,7 @@ ThemeForge is a fully client-side theme editor for VS Code, Cursor, and other co
 
 - **Visual color picker** — HSV 2D palette, hue slider, hex input, and 36 presets
 - **Live preview** — VS Code chrome mockup with syntax highlighting, file explorer, breadcrumbs, activity bar, status bar, and terminal
+- **Click to edit** — click any token in the preview to jump straight to its color in the side panel
 - **Multi-language tabs** — TypeScript and Python previews; drag to reorder, open/close freely
 - **Undo / Redo** — Ctrl+Z / Ctrl+Y with a full history panel (up to 50 snapshots, jumpable)
 - **Dark / Light switch** — confirmation modal if unsaved history exists
@@ -57,9 +58,9 @@ cd packages/shared && npm run build && cd ../..
 ### Run
 
 ```bash
-# Copy env files first
-cp packages/backend/.env.example packages/backend/.env
-cp packages/frontend/.env.local.example packages/frontend/.env.local
+# Create env files first (see "Environment Variables" below)
+#   packages/backend/.env
+#   packages/frontend/.env.local
 
 # Start everything (Turborepo)
 npm run dev

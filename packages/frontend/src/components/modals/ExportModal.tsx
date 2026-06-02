@@ -30,7 +30,10 @@ export function ExportModal() {
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center'>
-      <div className='absolute inset-0 bg-black/60 backdrop-blur-sm' onClick={closeExportModal} />
+      <div
+        className='absolute inset-0 bg-black/60 backdrop-blur-sm'
+        onClick={closeExportModal}
+      />
       <div className='relative z-10 bg-surface-1 border border-border rounded-xl shadow-2xl w-full max-w-sm p-6 flex flex-col gap-4'>
         <div className='flex items-center justify-between'>
           <h2 className='text-sm font-semibold text-text-primary'>Export Theme</h2>
@@ -38,8 +41,18 @@ export function ExportModal() {
             onClick={closeExportModal}
             className='text-text-muted hover:text-text-primary transition-colors'
           >
-            <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
+            <svg
+              className='w-4 h-4'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M6 18L18 6M6 6l12 12'
+              />
             </svg>
           </button>
         </div>

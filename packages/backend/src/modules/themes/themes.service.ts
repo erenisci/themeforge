@@ -11,7 +11,14 @@ export async function saveTheme(
   const id = nanoid(10);
   await db.execute({
     sql: 'INSERT INTO shared_themes (id, name, theme_json, author_name, is_public, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-    args: [id, name ?? null, JSON.stringify(theme), authorName ?? null, isPublic ? 1 : 0, Date.now()],
+    args: [
+      id,
+      name ?? null,
+      JSON.stringify(theme),
+      authorName ?? null,
+      isPublic ? 1 : 0,
+      Date.now(),
+    ],
   });
   return id;
 }
@@ -26,8 +33,17 @@ export async function getTheme(id: string): Promise<SharedTheme | null> {
   return JSON.parse(row.theme_json as string) as SharedTheme;
 }
 
-export async function getPublicThemes(limit = 50, offset = 0): Promise<
-  { id: string; name: string | null; author_name: string | null; type: string; created_at: number }[]
+export async function getPublicThemes(
+  limit = 50,
+  offset = 0,
+): Promise<
+  {
+    id: string;
+    name: string | null;
+    author_name: string | null;
+    type: string;
+    created_at: number;
+  }[]
 > {
   const result = await db.execute({
     sql: `SELECT id, name, author_name, created_at,

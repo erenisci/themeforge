@@ -147,9 +147,15 @@ That's it. The tab bar `+` button will automatically show your language as an op
 **Tokens without a `scope` use `editor.foreground`:**
 
 ```ts
-{ text: '(' }   // punctuation
-{ text: ' ' }   // space
-{ text: ': ' }  // colon + space
+{
+  text: '(';
+} // punctuation
+{
+  text: ' ';
+} // space
+{
+  text: ': ';
+} // colon + space
 ```
 
 ### TextMate Scopes

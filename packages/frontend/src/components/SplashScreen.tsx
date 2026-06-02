@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export default function SplashScreen() {
   const [visible, setVisible] = useState(true);
@@ -41,7 +41,13 @@ export default function SplashScreen() {
           opacity: 0,
         }}
       >
-        <Image src='/logo.svg' alt='ThemeForge' width={80} height={80} priority />
+        <Image
+          src='/logo.svg'
+          alt='ThemeForge'
+          width={80}
+          height={80}
+          priority
+        />
       </div>
       <div
         style={{
